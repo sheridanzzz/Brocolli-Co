@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,7 +11,25 @@
 		CD339FB926AEBC96005B6904 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD339FB826AEBC96005B6904 /* ContentView.swift */; };
 		CD339FBB26AEBC97005B6904 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD339FBA26AEBC97005B6904 /* Assets.xcassets */; };
 		CD339FBE26AEBC97005B6904 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD339FBD26AEBC97005B6904 /* Preview Assets.xcassets */; };
+		CD5358C326B2F7020004F634 /* InviteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5358C226B2F7020004F634 /* InviteViewModel.swift */; };
+		CD5358C726B3054D0004F634 /* logo2.png in Resources */ = {isa = PBXBuildFile; fileRef = CD5358C626B3054D0004F634 /* logo2.png */; };
+		CD93CA4A26B3DEF300FE7AD4 /* ConfettiSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = CD93CA4926B3DEF300FE7AD4 /* ConfettiSwiftUI */; };
+		CD93CA4B26B3DEF300FE7AD4 /* ConfettiSwiftUI in Embed Frameworks */ = {isa = PBXBuildFile; productRef = CD93CA4926B3DEF300FE7AD4 /* ConfettiSwiftUI */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CD93CA4C26B3DEF300FE7AD4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CD93CA4B26B3DEF300FE7AD4 /* ConfettiSwiftUI in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		CD339FB326AEBC96005B6904 /* Brocolli&Co.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Brocolli&Co.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -20,6 +38,8 @@
 		CD339FBA26AEBC97005B6904 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD339FBD26AEBC97005B6904 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		CD339FBF26AEBC97005B6904 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CD5358C226B2F7020004F634 /* InviteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteViewModel.swift; sourceTree = "<group>"; };
+		CD5358C626B3054D0004F634 /* logo2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo2.png; path = ../../logo2.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD93CA4A26B3DEF300FE7AD4 /* ConfettiSwiftUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,8 +75,10 @@
 			children = (
 				CD339FB626AEBC96005B6904 /* Brocolli_CoApp.swift */,
 				CD339FB826AEBC96005B6904 /* ContentView.swift */,
+				CD5358C226B2F7020004F634 /* InviteViewModel.swift */,
 				CD339FBA26AEBC97005B6904 /* Assets.xcassets */,
 				CD339FBF26AEBC97005B6904 /* Info.plist */,
+				CD5358C626B3054D0004F634 /* logo2.png */,
 				CD339FBC26AEBC97005B6904 /* Preview Content */,
 			);
 			path = "Brocolli&Co";
@@ -79,12 +102,16 @@
 				CD339FAF26AEBC96005B6904 /* Sources */,
 				CD339FB026AEBC96005B6904 /* Frameworks */,
 				CD339FB126AEBC96005B6904 /* Resources */,
+				CD93CA4C26B3DEF300FE7AD4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Brocolli&Co";
+			packageProductDependencies = (
+				CD93CA4926B3DEF300FE7AD4 /* ConfettiSwiftUI */,
+			);
 			productName = "Brocolli&Co";
 			productReference = CD339FB326AEBC96005B6904 /* Brocolli&Co.app */;
 			productType = "com.apple.product-type.application";
@@ -112,6 +139,9 @@
 				Base,
 			);
 			mainGroup = CD339FAA26AEBC96005B6904;
+			packageReferences = (
+				CD93CA4826B3DEF300FE7AD4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
+			);
 			productRefGroup = CD339FB426AEBC96005B6904 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -128,6 +158,7 @@
 			files = (
 				CD339FBE26AEBC97005B6904 /* Preview Assets.xcassets in Resources */,
 				CD339FBB26AEBC97005B6904 /* Assets.xcassets in Resources */,
+				CD5358C726B3054D0004F634 /* logo2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,6 +171,7 @@
 			files = (
 				CD339FB926AEBC96005B6904 /* ContentView.swift in Sources */,
 				CD339FB726AEBC96005B6904 /* Brocolli_CoApp.swift in Sources */,
+				CD5358C326B2F7020004F634 /* InviteViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,6 +358,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CD93CA4826B3DEF300FE7AD4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CD93CA4926B3DEF300FE7AD4 /* ConfettiSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CD93CA4826B3DEF300FE7AD4 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
+			productName = ConfettiSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CD339FAB26AEBC96005B6904 /* Project object */;
 }
