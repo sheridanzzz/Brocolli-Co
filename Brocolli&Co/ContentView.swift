@@ -7,10 +7,14 @@
 
 import SwiftUI
 import ConfettiSwiftUI
+import Combine
+import SystemConfiguration
+
 
 struct ContentView: View {
     @State private var isPresented = false
     
+    //first view
     var body: some View {
         NavigationView {
             VStack() {
@@ -27,54 +31,51 @@ struct ContentView: View {
                         .frame(width: 200, height: 50, alignment: .center)
                         .background(Capsule().fill(Color.green))
                 })
-                .fullScreenCover(isPresented: $isPresented, content: {
-                    InviteView(isPresented: $isPresented)
-                })
+                //to modally load next screen
+                .fullScreenCover(isPresented: $isPresented, content: InviteView.init)
             }
             .navigationTitle("Brocolli & Co.")
         }
     }
 }
 
+//Invite view
 struct InviteView: View {
+    @EnvironmentObject var userAuth: DataPost
+    @Environment(\.presentationMode) var presentationMode
     @State var isHideLoader: Bool = true
     @ObservedObject var inviteVm = InviteViewModel()
     @State var manager = DataPost()
-//    @State var showingAlert = false
-//    @State var errMess = ""
     @ObservedObject var errMod = DataPost()
-    
-    
-    
-    @Binding var isPresented: Bool
     @State private var fullName: String = ""
     @State private var email: String = ""
     @State private var confirmEmail: String = ""
+    @State var isclosed: Bool = true
     
     var body: some View{
         NavigationView {
             ZStack {
                 VStack {
                     VStack {
+                        //Brocolli and co image
                         Image("Brocolli_and_Co")
                             .resizable()
                             .scaledToFit()
+                        //text fields for name and email
                         EntryField(sfSymbolName: "person", placeHolder: "Full Name", prompt: inviteVm.fullnamePrompt, field: $inviteVm.fullName)
                         EntryField(sfSymbolName: "envelope", placeHolder: "Email Address", prompt: inviteVm.emailPrompt, field: $inviteVm.email)
                         EntryField(sfSymbolName: "envelope", placeHolder: "Confirm Email Address", prompt: inviteVm.confirmEmPrompt, field: $inviteVm.confirmEm)
                         ZStack{
+                            //loading screen in zStack
                             LoaderView(tintColor: .green, scaleSize: 1.0).padding(.bottom,50).hidden(isHideLoader)
                             HStack{
                                 Button(action: {
-                                    //self.showingAlert.toggle()
-                                    print("1st")
-                                    print(errMod.showingAlert)
-                                    print(errMod.errMess)
                                     self.isHideLoader = !self.isHideLoader
                                     let secondsToDelay = 5.0
-                                    self.manager.checkDetails(name: inviteVm.fullName, email: inviteVm.email)
+                                    //call function to call API
+                                    self.errMod.checkDetails(name: inviteVm.fullName, email: inviteVm.email)
                                     DispatchQueue.main.asyncAfter(deadline: .now() + secondsToDelay) {
-
+                                        //hide the loader
                                         self.isHideLoader.toggle()
                                     }
                                 }) {
@@ -84,20 +85,16 @@ struct InviteView: View {
                                         .padding(.horizontal)
                                         .background(Capsule().fill(Color.green))
                                 }
-                                .fullScreenCover(isPresented: $errMod.success, content: {
-                                    CongratulationsView()
-                                })
+                                //alert box with showing alert is triggered
                                 .alert(isPresented: $errMod.showingAlert, content: {
                                     Alert(title: Text("Error"), message: Text(errMod.errMess), dismissButton: .default(Text("OK")))
-                                
-    
-                                    
                                 })
+                                //button disabled until validation complete
                                 .opacity(inviteVm.isInviteComplete ? 1 : 0.6)
                                 .disabled(!inviteVm.isInviteComplete)
-                                
                                 Button(action: {
-                                    self.isPresented.toggle()
+                                    //dismiss view on cancel
+                                    presentationMode.wrappedValue.dismiss()
                                 }) {
                                     Text("cancel")
                                         .foregroundColor(.white)
@@ -107,7 +104,6 @@ struct InviteView: View {
                                 }
                             }
                         }
-                        
                     }
                     .padding()
                     .background(Color(UIColor.systemBackground))
@@ -116,31 +112,139 @@ struct InviteView: View {
                     
                     Spacer()
                 }
+                .navigationTitle("Invite Details")
                 .padding()
+                //move to next view on trigger
+                .navigate(to: CongratulationsView(), when: $errMod.success)
             } // End of ZStack
             
-            .navigationTitle("Invite Details")
             
         }
         
     }
 }
 
-struct CongratulationsView: View {
-    @State var counter7:Int = 0
-
-     var body: some View {
-        VStack{
-         ZStack{
-             Text("🥦").font(.system(size: 50)).onTapGesture(){counter7 += 1}
-            ConfettiCannon(counter: $counter7, num:1, confettis: [.text("🍆"), .text("🥕"), .text("🍠"), .text("🥬")], confettiSize: 30, repetitions: 50, repetitionInterval: 0.1)
-            
-         }
-            Text("Congratulations! Invite Sent!")
+//extension for moving between views
+extension View {
+    
+    /// Navigate to a new view.
+    /// - Parameters:
+    ///   - view: View to navigate to.
+    ///   - binding: Only navigates when this condition is `true`.
+    func navigate<NewView: View>(to view: NewView, when binding: Binding<Bool>) -> some View {
+        NavigationView {
+            ZStack {
+                self
+                    .navigationBarTitle("")
+                    .navigationBarHidden(true)
+                
+                NavigationLink(
+                    destination: view
+                        .navigationBarTitle("")
+                        .navigationBarHidden(true),
+                    isActive: binding
+                ) {
+                    EmptyView()
+                }
+            }
         }
-     }
+    }
 }
 
+//Invite done view
+struct CongratulationsView: View {
+    @State var counter7:Int = 0
+    @State private var isDismissed = false
+    @State var isDone: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            VStack{
+                ZStack{
+                    //confetti
+                    Text("🥦").font(.system(size: 50)).onTapGesture(){counter7 += 1}
+                    //library for confetti functions
+                    ConfettiCannon(counter: $counter7, num:1, confettis: [.text("🍆"), .text("🥕"), .text("🍠"), .text("🥬")], confettiSize: 30, repetitions: 50, repetitionInterval: 0.1)
+                }
+                Text("Congratulation! Invite Sent!")
+            }
+            //navbar item to close view
+            .toolbar(content: {
+                Button{
+                    isDone.toggle()
+                }label:{
+                    Label("close", systemImage: "xmark")
+                }
+            })
+        }.navigate(to: CancelInviteView(), when: $isDone)
+    }
+}
+
+struct CancelInviteView: View {
+    @State private var isPresented = false
+    @State var isCancel: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            VStack() {
+                Image("Brocolli_and_Co")
+                    .resizable()
+                    .scaledToFit()
+                Text("Welcome to Brocolli & Co.").padding()
+                Button(action: {
+                    self.isPresented.toggle()
+                }, label: {
+                    Text("Cancel Invite")
+                        .bold()
+                        .foregroundColor(Color.white)
+                        .frame(width: 200, height: 50, alignment: .center)
+                        .background(Capsule().fill(Color.green))
+                })
+                //alert box for delete invite
+                .alert(isPresented: $isPresented) {
+                    Alert(
+                        title: Text("Are you sure you want to delete this?"),
+                        message: Text("Can't Undo"),
+                        primaryButton: .destructive(Text("Delete")) {
+                            isCancel.toggle()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
+            }
+            .navigationBarHidden(true)
+            .navigate(to: CancelView(), when: $isCancel)
+        }
+    }
+}
+
+struct CancelView: View {
+    @State var counter6:Int = 0
+    @State private var isDismissed = false
+    @State var isDone: Bool = false
+    
+    var body: some View {
+        NavigationView {
+            VStack{
+                ZStack{
+                    Text("💩").font(.system(size: 50)).onTapGesture(){counter6 += 1}
+                    ConfettiCannon(counter: $counter6, num:1, confettis: [.text("💩")], confettiSize: 20, repetitions: 100, repetitionInterval: 0.1)
+                    
+                }
+                Text("Invite Cancelled!")
+            }
+            .toolbar(content: {
+                Button{
+                    isDone.toggle()
+                }label:{
+                    Label("close", systemImage: "xmark")
+                }
+            })
+        }.navigate(to: ContentView(), when: $isDone)
+    }
+}
+
+//hide view
 extension View {
     @ViewBuilder func hidden(_ shouldHide: Bool) -> some View {
         switch shouldHide {
@@ -150,6 +254,7 @@ extension View {
     }
 }
 
+//loader and progress view
 struct LoaderView: View {
     var tintColor: Color = .blue
     var scaleSize: CGFloat = 1.0
@@ -161,7 +266,7 @@ struct LoaderView: View {
     }
 }
 
-
+//text fields for email and name
 struct EntryField: View {
     var sfSymbolName: String
     var placeHolder: String
@@ -185,25 +290,26 @@ struct EntryField: View {
     }
 }
 
-
+//code for API post request
 class DataPost: ObservableObject {
-    @Published var errMess = "its me"
-    @Published var showingAlert = false
-    @Published var success = false
+    
+    var didChange = PassthroughSubject<DataPost, Never>()
+    
+    @Published var errMess = ""
     @Published var value = 0
-
-    init() {
-        for i in 1...10 {
-            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i)) {
-                self.value += 1
-                if (self.value == 10)
-                {
-                    self.success.toggle()
-                }
-                
-            }
+    
+    @Published var showingAlert : Bool = false {
+        didSet {
+            didChange.send(self)
         }
     }
+    
+    @Published var success : Bool = false {
+        didSet {
+            didChange.send(self)
+        }
+    }
+    
     func checkDetails(name: String,  email: String) {
         
         let body: [String: Any] = ["name": name, "email": email]
@@ -232,11 +338,14 @@ class DataPost: ObservableObject {
                 let jsonData = ses.data(using: .utf8)
                 if response.statusCode == 400 {
                     let response1: Response = try! JSONDecoder().decode(Response.self, from: jsonData ?? data)
-                    
+                    DispatchQueue.main.async {
                         self.showingAlert.toggle()
                         self.errMess = response1.errorMessage
-                        print(self.errMess)
-                        print(self.showingAlert)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.success.toggle()
+                    }
                 }
             }
             guard let data = data, error == nil else {

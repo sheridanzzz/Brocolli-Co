@@ -31,8 +31,8 @@ class InviteViewModel: ObservableObject {
     
     var isInviteComplete: Bool {
         if !emailsMatch() ||
-        !isEmailValid()
-             {
+            !isEmailValid()
+        {
             return false
         }
         return true
