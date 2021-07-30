@@ -14,6 +14,7 @@ import SystemConfiguration
 struct ContentView: View {
     @State private var isPresented = false
     
+    //email check backend validation: usedemail@blinq.app
     //first view
     var body: some View {
         NavigationView {
